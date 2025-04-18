@@ -1,25 +1,25 @@
-export const validateEnv = () => {
-  const { user, password, host, port, reconnect } = process.env;
+export const validateEnv = (env: NodeJS.ProcessEnv) => {
+  const { user, password, host, port, reconnect } = env;
   const msReconnect = Number(reconnect);
-  let error = "";
+  const errors = [];
   if (!user) {
-    error += "Missing user; ";
+    errors.push("Missing user");
   }
   if (!password) {
-    error += "Missing password; ";
+    errors.push("Missing password");
   }
   if (!host) {
-    error += "Missing host; ";
+    errors.push("Missing host");
   }
   if (!port) {
-    error += "Missing port; ";
+    errors.push("Missing port");
   }
-  if (msReconnect < 1000) {
-    error += "Reconnection interval less than 1s; ";
+  if (isNaN(msReconnect) || msReconnect < 1000) {
+    errors.push("Reconnection interval less than 1s");
   }
-  if (error) {
-    console.error("ERROR: Wrong .env parameters: " + error);
-    return { error };
+  if (errors.length > 0) {
+    console.error("ERROR: Wrong .env parameters: " + errors.join("; "));
+    return { error: errors.join("; ") };
   }
   if (user && password) {
     return { user, password, host, port, msReconnect };

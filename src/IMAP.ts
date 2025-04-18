@@ -2,7 +2,7 @@ import { validateEnv } from "./validations.js";
 import Imap from "node-imap";
 
 export const createIMAP = () => {
-  const { user, password, host, port, msReconnect } = validateEnv();
+  const { user, password, host, port, msReconnect } = validateEnv(process.env);
   if (user && password) {
     const IMAP = new Imap({
       user,

@@ -1,31 +1,31 @@
-import { vi, afterAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { validateEnv } from "../validations.js";
 
-afterAll(() => {
-  vi.unstubAllEnvs();
-});
+const env = {
+  user: "test",
+  password: "test",
+  host: "test",
+  port: "993",
+  reconnect: "10000",
+};
 
-describe("ENV validation positive", () => {
+describe("ENV validation", () => {
   it("should return parameters if .env is valid", () => {
-    vi.stubEnv("USER", "test");
-    vi.stubEnv("PASSWORD", "test");
-    vi.stubEnv("PORT", "993");
-    vi.stubEnv("HOST", "test");
-    vi.stubEnv("RECONNECT", "10000");
-    const validateEnvResult = validateEnv();
+    const validateEnvResult = validateEnv(env);
     expect(validateEnvResult.user).toBeTruthy();
   });
+  it("should return error if .env is empty", () => {
+    const validateEnvResult = validateEnv({});
+    expect(validateEnvResult.error).toBe(
+      "Missing user; Missing password; Missing host; Missing port; Reconnection interval less than 1s",
+    );
+  });
   it("should return error if .env is invalid", () => {
-    vi.stubEnv("USER", "");
-    const validateEnvResult = validateEnv();
-    expect(validateEnvResult.error).toBe("Missing user; ");
+    const validateEnvResult = validateEnv({ ...env, user: "" });
+    expect(validateEnvResult.error).toBe("Missing user");
   });
   it("should return error if .env.RECONNECT is wrong", () => {
-    vi.stubEnv("USER", "test");
-    vi.stubEnv("RECONNECT", "");
-    const validateEnvResult = validateEnv();
-    expect(validateEnvResult.error).toBe(
-      "Reconnection interval less than 1s; ",
-    );
+    const validateEnvResult = validateEnv({ ...env, reconnect: "999" });
+    expect(validateEnvResult.error).toBe("Reconnection interval less than 1s");
   });
 });
