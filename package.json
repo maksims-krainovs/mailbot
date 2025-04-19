@@ -57,6 +57,8 @@
     "vitest": "^3.1.1"
   },
   "dependencies": {
-    "node-imap": "^0.9.6"
+    "node-imap": "^0.9.6",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0"
   }
 }
