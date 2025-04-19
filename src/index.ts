@@ -1,13 +1,7 @@
 import Imap from "node-imap";
-import { createIMAP, onSearchUnseen } from "./IMAP.js";
-import pino from "pino";
-
-const log = pino.pino({
-  level: "info",
-  transport: {
-    target: "pino-pretty",
-  },
-});
+import { onSearchUnseen } from "./IMAP/search.js";
+import { log } from "./log.js";
+import { createIMAP } from "./IMAP/create.js";
 
 const onOpenBox = (imap: Imap) => (err: Error, box: Imap.Box) => {
   if (err) {
@@ -38,5 +32,3 @@ if (createIMAPResult) {
     connectAndCheck(IMAP);
   }, msReconnect);
 }
-
-export default log;

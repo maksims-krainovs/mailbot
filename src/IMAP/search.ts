@@ -1,27 +1,6 @@
-import { analyzeEmail } from "./commands.js";
-import log from "./index.js";
+import { analyzeEmail } from "../commands.js";
 import Imap from "node-imap";
-import { validateEnv } from "./validations.js";
-
-export const createIMAP = () => {
-  const { user, password, host, port, msReconnect } = validateEnv(log)(
-    process.env,
-  );
-  if (user && password) {
-    const IMAP = new Imap({
-      user,
-      password,
-      host,
-      port: Number(port),
-      debug: (x) => log.debug(x),
-      tls: true,
-    });
-    return {
-      IMAP,
-      msReconnect,
-    };
-  }
-};
+import { log } from "../log.js";
 
 export const onSearchUnseen = (imap: Imap) => (err: Error, uids: number[]) => {
   log.info(uids, "uids");
@@ -32,7 +11,7 @@ export const onSearchUnseen = (imap: Imap) => (err: Error, uids: number[]) => {
   uids.forEach((uid) => {
     log.info("getting " + uid);
     const fetchResult = imap.fetch(uid, {
-      bodies: ["HEADER.FIELDS (FROM SUBJECT DATE)", "TEXT"],
+      bodies: ["HEADER", "TEXT"],
     });
     fetchResult.on("message", (msg, seqno) => {
       log.info("seqno: " + seqno);
@@ -51,13 +30,14 @@ export const onSearchUnseen = (imap: Imap) => (err: Error, uids: number[]) => {
         stream.once("end", () => {
           log.info("end event");
           const parsed = Imap.parseHeader(buffer);
+          log.info(parsed, "parsed");
           const fetchedMsg = {
-            from: parsed.from[0],
+            from: parsed["return-path"][0],
             subj: parsed.subject[0],
             body,
           };
           log.info(fetchedMsg, "fetchedMsg");
-          analyzeEmail()(fetchedMsg);
+          analyzeEmail(fetchedMsg);
         });
       });
     });
