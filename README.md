@@ -1,5 +1,8 @@
 MailBot is a prototype of a Typescript tool allowing to send commands to your server by email.
 
+## Disclaimer
+This is just an example not intended to be used in serious projects. This script should be used very cautiously, since it exposes a way to control you machine by just sending an email.
+
 ## Installation
 
 1. git clone
@@ -10,26 +13,30 @@ MailBot is a prototype of a Typescript tool allowing to send commands to your se
 ## Usage
 
 The server script can be run e.g. by npm run start.
-It is expected to check your IMAP server (e.g. imap.gmail.com) for UNSEEN messages after each <RECONNECT> milliseconds and run the corresponding server function configured in commands.ts, if the subject of the email equals to the name of the command. It is recommended to set ONLYFROM parameter so that only emails from the specified address could trigger
-a command. After a command is executed, it should mark the message as SEEN and send back a response email with the results of the command.
+
+It is expected to check your IMAP server (e.g. imap.gmail.com) for UNSEEN messages after each <RECONNECT> milliseconds and run the corresponding server function configured in commands.ts, if the subject of the email equals to the name of the command.
+
+It is recommended to set ONLYFROM parameter so that only emails from the specified address could trigger a command.
+
+After a command is executed, it should mark the message as SEEN and send back a response email with the results of the command.
+
 E.g. if it detects a new message with Subject=NOW, it sends a response message with the current time.
 
 ## Configuration
 
-Environment Variables
+Environment parameters
+
 The application requires the following environment variables to be set in the .env file:
 
-Variable Description Example Value
-HOST IMAP server host imap.gmail.com
-USER IMAP username your-email@gmail.com
-PASSWORD IMAP password your-password
-PORT IMAP server port 993
-RECONNECT Reconnection interval in ms 10000
-ONLYFROM Filter emails from this address your-email@gmail.com
-SMTPHOST SMTP server host smtp.gmail.com
-SMTPUSER SMTP username your-email@gmail.com
-SMTPPASSWORD SMTP password your-passwo
+| Variable | Description | Example value|
+| -------- | ----------- | -------------|
+| HOST | IMAP server host | imap.gmail.com|
+| USER | IMAP username | your-email@gmail.com |
+| PASSWORD |IMAP password | your-password |
+| PORT | IMAP server port | 993 |
+| RECONNECT | Reconnection interval in ms | 10000 |
+| ONLYFROM | Filter emails from this address | your-email@gmail.com |
+| SMTPHOST | SMTP server host | smtp.gmail.com |
+| SMTPUSER | SMTP username | your-email@gmail.com |
+| SMTPPASSWORD | SMTP password | your-password |
 
-## Disclaimer
-
-This is just a prototype not intended to be used in serious projects. This script should be used very cautiously, since it exposes a way to control you machine by just sending an email.
